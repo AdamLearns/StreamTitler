@@ -68,18 +68,34 @@
       $ytPlaylist.value = s.youtube.playlistId;
     }
 
-    if (s.youtube.scheduledStartTime) {
-      try {
-        const d = new Date(s.youtube.scheduledStartTime);
-        // datetime-local needs YYYY-MM-DDTHH:MM
-        $ytDatetime.value = new Date(
-          d.getTime() - d.getTimezoneOffset() * 60000,
-        )
-          .toISOString()
-          .slice(0, 16);
-      } catch {
-        /* ignore bad dates */
+    // Compute default go-live time based on current time
+    {
+      const now = new Date();
+      const hours = now.getHours();
+      let goLive;
+      if (hours < 12) {
+        // Morning: max(8:30 AM today, now + 5 min)
+        const morning = new Date(now);
+        morning.setHours(8, 30, 0, 0);
+        const fiveMin = new Date(now.getTime() + 5 * 60000);
+        goLive = fiveMin > morning ? fiveMin : morning;
+      } else if (hours < 17) {
+        // Afternoon: max(1:00 PM today, now + 5 min)
+        const afternoon = new Date(now);
+        afternoon.setHours(13, 0, 0, 0);
+        const fiveMin = new Date(now.getTime() + 5 * 60000);
+        goLive = fiveMin > afternoon ? fiveMin : afternoon;
+      } else {
+        // After 5 PM: 8:30 AM next day
+        goLive = new Date(now);
+        goLive.setDate(goLive.getDate() + 1);
+        goLive.setHours(8, 30, 0, 0);
       }
+      $ytDatetime.value = new Date(
+        goLive.getTime() - goLive.getTimezoneOffset() * 60000,
+      )
+        .toISOString()
+        .slice(0, 16);
     }
 
     if (s.auth.twitch.connected) {
@@ -260,7 +276,7 @@
       const playlistName =
         $ytPlaylist.options[$ytPlaylist.selectedIndex]?.textContent || "";
 
-      // Persist YouTube-specific settings
+      // Persist YouTube-specific settings (scheduledStartTime excluded)
       await post("/api/settings", {
         sharedDescription: sharedDesc,
         twitch: { title: baseTitle },
@@ -268,7 +284,6 @@
           youtubeDescription: ytDesc,
           extraTitleTags: extra,
           tags,
-          scheduledStartTime,
           privacyStatus,
           playlistId,
           playlistName,
