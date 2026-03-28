@@ -198,6 +198,46 @@ select { cursor: pointer; }
 }
 
 /* ---------- Toast ---------- */
+
+/* ---------- Description actions & counter ---------- */
+.desc-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.35rem;
+}
+
+.link-subtle {
+  color: #adadb8;
+  font-size: 0.78rem;
+  text-decoration: none;
+}
+
+.link-subtle:hover {
+  color: #efeff1;
+  text-decoration: underline;
+}
+
+.btn-copy {
+  background: #303035;
+}
+
+.btn-copy:hover {
+  background: #404047;
+}
+
+.char-counter {
+  float: right;
+  font-weight: 400;
+  font-size: 0.75rem;
+  color: #717175;
+}
+
+.char-counter.over {
+  color: #ff6b6b;
+}
+
+/* ---------- Toast ---------- */
 .toast {
   position: fixed;
   bottom: 1.5rem;

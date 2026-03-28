@@ -7,6 +7,9 @@
 
   // ---- DOM refs -----------------------------------------------------------
   const $title = document.getElementById("title");
+  const $sharedDesc = document.getElementById("shared-description");
+  const $descCounter = document.getElementById("desc-counter");
+  const $copyDesc = document.getElementById("copy-desc");
   const $twitchCategory = document.getElementById("twitch-category");
   const $twitchCatId = document.getElementById("twitch-category-id");
   const $twitchTags = document.getElementById("twitch-tags");
@@ -41,12 +44,15 @@
     const s = await res.json();
 
     $title.value = s.twitch.title || "";
+    $sharedDesc.value = s.sharedDescription || "";
+    updateCharCounter();
     $twitchCategory.value = s.twitch.categoryName || "";
     $twitchCatId.value = s.twitch.categoryId || "";
     $twitchTags.value = (s.twitch.tags || []).join(", ");
 
     $ytExtraTags.value = s.youtube.extraTitleTags || "";
-    $ytDescription.value = s.youtube.description || "";
+    $ytDescription.value =
+      s.youtube.youtubeDescription || s.youtube.description || "";
     $ytTags.value = (s.youtube.tags || []).join(", ");
     $ytPrivacy.value = s.youtube.privacyStatus || "public";
 
@@ -73,6 +79,21 @@
       $youtubeAuthBtn.textContent = "Reconnect";
     }
   }
+
+  // ---- Shared description char counter & copy ----------------------------
+  function updateCharCounter() {
+    const len = $sharedDesc.value.length;
+    $descCounter.textContent = len + " / 140";
+    $descCounter.classList.toggle("over", len > 140);
+  }
+
+  $sharedDesc.addEventListener("input", updateCharCounter);
+
+  $copyDesc.addEventListener("click", function () {
+    navigator.clipboard.writeText($sharedDesc.value).then(function () {
+      toast("Description copied!", "success");
+    });
+  });
 
   // ---- Category autocomplete ----------------------------------------------
   let searchTimer;
@@ -162,6 +183,7 @@
 
       // Save settings first
       await post("/api/settings", {
+        sharedDescription: $sharedDesc.value,
         twitch: { title, categoryId, categoryName, tags },
       });
 
@@ -189,16 +211,19 @@
       const extra = $ytExtraTags.value.trim();
       const title = extra ? baseTitle + " " + extra : baseTitle;
 
-      const description = $ytDescription.value;
+      const sharedDesc = $sharedDesc.value;
+      const ytDesc = $ytDescription.value;
+      const description = ytDesc ? sharedDesc + "\n\n" + ytDesc : sharedDesc;
       const tags = parseTags($ytTags.value);
       const scheduledStartTime = new Date($ytDatetime.value).toISOString();
       const privacyStatus = $ytPrivacy.value;
 
       // Persist YouTube-specific settings
       await post("/api/settings", {
+        sharedDescription: sharedDesc,
         twitch: { title: baseTitle },
         youtube: {
-          description,
+          youtubeDescription: ytDesc,
           extraTitleTags: extra,
           tags,
           scheduledStartTime,

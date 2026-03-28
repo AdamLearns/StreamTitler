@@ -11,7 +11,7 @@ export interface TwitchSettings {
 }
 
 export interface YouTubeSettings {
-  description: string;
+  youtubeDescription: string;
   extraTitleTags: string;
   tags: string[];
   scheduledStartTime: string;
@@ -31,12 +31,14 @@ export interface AuthTokens {
 }
 
 export interface Settings {
+  sharedDescription: string;
   twitch: TwitchSettings;
   youtube: YouTubeSettings;
   auth: AuthTokens;
 }
 
 const DEFAULT_SETTINGS: Settings = {
+  sharedDescription: "",
   twitch: {
     title: "",
     categoryId: "",
@@ -44,7 +46,7 @@ const DEFAULT_SETTINGS: Settings = {
     tags: [],
   },
   youtube: {
-    description: "",
+    youtubeDescription: "",
     extraTitleTags: "",
     tags: [],
     scheduledStartTime: "",
@@ -61,6 +63,8 @@ export function loadSettings(): Settings {
     const data = fs.readFileSync(SETTINGS_PATH, "utf-8");
     const saved = JSON.parse(data);
     return {
+      sharedDescription:
+        saved.sharedDescription ?? DEFAULT_SETTINGS.sharedDescription,
       twitch: { ...DEFAULT_SETTINGS.twitch, ...saved.twitch },
       youtube: { ...DEFAULT_SETTINGS.youtube, ...saved.youtube },
       auth: {

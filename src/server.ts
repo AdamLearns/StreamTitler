@@ -22,6 +22,7 @@ app.get("/api/settings", (_req, res) => {
   const settings = loadSettings();
   // Send settings without raw auth tokens
   res.json({
+    sharedDescription: settings.sharedDescription,
     twitch: settings.twitch,
     youtube: settings.youtube,
     auth: {
@@ -33,7 +34,9 @@ app.get("/api/settings", (_req, res) => {
 
 app.post("/api/settings", (req, res) => {
   const settings = loadSettings();
-  const { twitch, youtube: yt } = req.body;
+  const { twitch, youtube: yt, sharedDescription } = req.body;
+  if (sharedDescription !== undefined)
+    settings.sharedDescription = sharedDescription;
   if (twitch) settings.twitch = { ...settings.twitch, ...twitch };
   if (yt) settings.youtube = { ...settings.youtube, ...yt };
   saveSettings(settings);
@@ -172,10 +175,9 @@ app.post("/api/youtube/create", async (req, res) => {
       privacyStatus || "public",
     );
 
-    // Persist youtube-specific settings
+    // Persist youtube-specific settings (not the composed description)
     const settings = loadSettings();
     Object.assign(settings.youtube, {
-      description,
       tags,
       scheduledStartTime,
       privacyStatus,
