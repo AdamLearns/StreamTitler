@@ -165,8 +165,14 @@ app.post("/api/twitch/update", async (req, res) => {
 
 app.post("/api/youtube/create", async (req, res) => {
   try {
-    const { title, description, tags, scheduledStartTime, privacyStatus } =
-      req.body;
+    const {
+      title,
+      description,
+      tags,
+      scheduledStartTime,
+      privacyStatus,
+      playlistId,
+    } = req.body;
     const result = await youtube.createBroadcast(
       title,
       description,
@@ -174,6 +180,15 @@ app.post("/api/youtube/create", async (req, res) => {
       scheduledStartTime,
       privacyStatus || "public",
     );
+
+    // Add to playlist if one is selected
+    if (playlistId) {
+      try {
+        await youtube.addToPlaylist(result.videoId, playlistId);
+      } catch (err) {
+        console.warn("Could not add to playlist (non-fatal):", err);
+      }
+    }
 
     // Persist youtube-specific settings (not the composed description)
     const settings = loadSettings();
@@ -187,6 +202,15 @@ app.post("/api/youtube/create", async (req, res) => {
     res.json(result);
   } catch (err) {
     console.error("YouTube create error:", err);
+    res.status(500).json({ error: String(err) });
+  }
+});
+
+app.get("/api/youtube/playlists", async (_req, res) => {
+  try {
+    const playlists = await youtube.listPlaylists();
+    res.json(playlists);
+  } catch (err) {
     res.status(500).json({ error: String(err) });
   }
 });

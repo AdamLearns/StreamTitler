@@ -237,6 +237,26 @@ select { cursor: pointer; }
   color: #ff6b6b;
 }
 
+/* ---------- Playlist row ---------- */
+.playlist-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.playlist-row select {
+  flex: 1;
+}
+
+.btn-refresh {
+  background: #303035;
+  white-space: nowrap;
+}
+
+.btn-refresh:hover {
+  background: #404047;
+}
+
 /* ---------- Toast ---------- */
 .toast {
   position: fixed;

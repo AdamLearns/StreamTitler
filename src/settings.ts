@@ -16,6 +16,8 @@ export interface YouTubeSettings {
   tags: string[];
   scheduledStartTime: string;
   privacyStatus: string;
+  playlistId: string;
+  playlistName: string;
 }
 
 export interface AuthTokens {
@@ -51,6 +53,8 @@ const DEFAULT_SETTINGS: Settings = {
     tags: [],
     scheduledStartTime: "",
     privacyStatus: "public",
+    playlistId: "",
+    playlistName: "",
   },
   auth: {
     twitch: { accessToken: "", refreshToken: "", userId: "" },

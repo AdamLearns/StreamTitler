@@ -21,6 +21,8 @@
   const $ytPrivacy = document.getElementById("yt-privacy");
   const $btnTwitch = document.getElementById("update-twitch");
   const $btnYoutube = document.getElementById("create-youtube");
+  const $ytPlaylist = document.getElementById("yt-playlist");
+  const $refreshPlaylists = document.getElementById("refresh-playlists");
   const $twitchStatus = document.getElementById("twitch-status");
   const $youtubeStatus = document.getElementById("youtube-status");
   const $twitchAuthBtn = document.getElementById("twitch-auth-btn");
@@ -55,6 +57,16 @@
       s.youtube.youtubeDescription || s.youtube.description || "";
     $ytTags.value = (s.youtube.tags || []).join(", ");
     $ytPrivacy.value = s.youtube.privacyStatus || "public";
+
+    // Restore saved playlist selection
+    if (s.youtube.playlistId) {
+      // Add the saved option so it appears without a refresh
+      const opt = document.createElement("option");
+      opt.value = s.youtube.playlistId;
+      opt.textContent = s.youtube.playlistName || s.youtube.playlistId;
+      $ytPlaylist.appendChild(opt);
+      $ytPlaylist.value = s.youtube.playlistId;
+    }
 
     if (s.youtube.scheduledStartTime) {
       try {
@@ -150,6 +162,33 @@
     return d.innerHTML;
   }
 
+  // ---- Playlist refresh ---------------------------------------------------
+  $refreshPlaylists.addEventListener("click", async function () {
+    $refreshPlaylists.disabled = true;
+    $refreshPlaylists.textContent = "…";
+    try {
+      const res = await fetch("/api/youtube/playlists");
+      if (!res.ok) throw new Error("Failed to fetch playlists");
+      const playlists = await res.json();
+      const prev = $ytPlaylist.value;
+      $ytPlaylist.innerHTML = '<option value="">None</option>';
+      playlists.forEach(function (p) {
+        const opt = document.createElement("option");
+        opt.value = p.id;
+        opt.textContent = p.title;
+        $ytPlaylist.appendChild(opt);
+      });
+      // Re-select previous if still in list
+      if (prev) $ytPlaylist.value = prev;
+      toast("Playlists refreshed (" + playlists.length + ")", "success");
+    } catch (err) {
+      toast(err.message, "error");
+    } finally {
+      $refreshPlaylists.disabled = false;
+      $refreshPlaylists.textContent = "↻ Refresh";
+    }
+  });
+
   // ---- Helpers ------------------------------------------------------------
   function parseTags(str) {
     return str
@@ -217,6 +256,9 @@
       const tags = parseTags($ytTags.value);
       const scheduledStartTime = new Date($ytDatetime.value).toISOString();
       const privacyStatus = $ytPrivacy.value;
+      const playlistId = $ytPlaylist.value;
+      const playlistName =
+        $ytPlaylist.options[$ytPlaylist.selectedIndex]?.textContent || "";
 
       // Persist YouTube-specific settings
       await post("/api/settings", {
@@ -228,6 +270,8 @@
           tags,
           scheduledStartTime,
           privacyStatus,
+          playlistId,
+          playlistName,
         },
       });
 
@@ -237,6 +281,7 @@
         tags,
         scheduledStartTime,
         privacyStatus,
+        playlistId,
       });
 
       toast("YouTube stream created! (" + result.videoId + ")", "success");

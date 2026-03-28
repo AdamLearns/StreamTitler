@@ -131,3 +131,46 @@ export async function createBroadcast(
 
   return { videoId };
 }
+
+export async function addToPlaylist(
+  videoId: string,
+  playlistId: string,
+): Promise<void> {
+  const auth = getAuthedClient();
+  const yt = google.youtube({ version: "v3", auth });
+  await yt.playlistItems.insert({
+    part: ["snippet"],
+    requestBody: {
+      snippet: {
+        playlistId,
+        resourceId: { kind: "youtube#video", videoId },
+      },
+    },
+  });
+}
+
+export async function listPlaylists(): Promise<
+  Array<{ id: string; title: string }>
+> {
+  const auth = getAuthedClient();
+  const yt = google.youtube({ version: "v3", auth });
+  const items: Array<{ id: string; title: string }> = [];
+  let pageToken: string | undefined;
+
+  do {
+    const res = await yt.playlists.list({
+      part: ["snippet"],
+      mine: true,
+      maxResults: 50,
+      pageToken,
+    });
+    for (const item of res.data.items || []) {
+      if (item.id && item.snippet?.title) {
+        items.push({ id: item.id, title: item.snippet.title });
+      }
+    }
+    pageToken = res.data.nextPageToken || undefined;
+  } while (pageToken);
+
+  return items;
+}
