@@ -226,6 +226,14 @@ select { cursor: pointer; }
   background: #404047;
 }
 
+.btn-copy.over {
+  background: #b71c1c;
+}
+
+.btn-copy.over:hover {
+  background: #d32f2f;
+}
+
 .char-counter {
   float: right;
   font-weight: 400;

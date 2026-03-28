@@ -113,6 +113,7 @@
     const len = $sharedDesc.value.length;
     $descCounter.textContent = len + " / 140";
     $descCounter.classList.toggle("over", len > 140);
+    $copyDesc.classList.toggle("over", len > 140);
   }
 
   $sharedDesc.addEventListener("input", updateCharCounter);
