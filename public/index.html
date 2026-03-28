@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StreamTitler</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>StreamTitler</h1>
+      <div class="auth-row">
+        <div class="auth-item">
+          <span class="status-dot" id="twitch-status"></span>
+          <span>Twitch</span>
+          <a href="/auth/twitch" class="btn btn-sm btn-twitch" id="twitch-auth-btn">Connect</a>
+        </div>
+        <div class="auth-item">
+          <span class="status-dot" id="youtube-status"></span>
+          <span>YouTube</span>
+          <a href="/auth/youtube" class="btn btn-sm btn-youtube" id="youtube-auth-btn">Connect</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Shared title -->
+    <section class="shared-section">
+      <div class="form-group">
+        <label for="title">Stream Title</label>
+        <input type="text" id="title" placeholder="What are you streaming today?">
+      </div>
+    </section>
+
+    <div class="panels">
+      <!-- Twitch panel -->
+      <section class="panel">
+        <h2 class="panel-heading twitch-accent">Twitch</h2>
+
+        <div class="form-group">
+          <label for="twitch-category">Category</label>
+          <div class="autocomplete-wrapper">
+            <input type="text" id="twitch-category" placeholder="Search categories…" autocomplete="off">
+            <div class="autocomplete-results" id="category-results"></div>
+          </div>
+          <input type="hidden" id="twitch-category-id">
+        </div>
+
+        <div class="form-group">
+          <label for="twitch-tags">Tags <span class="hint">(comma separated)</span></label>
+          <input type="text" id="twitch-tags" placeholder="English, FPS, Competitive">
+        </div>
+
+        <button class="btn btn-twitch" id="update-twitch">Update Twitch</button>
+      </section>
+
+      <!-- YouTube panel -->
+      <section class="panel">
+        <h2 class="panel-heading youtube-accent">YouTube</h2>
+
+        <div class="form-group">
+          <label for="yt-extra-tags">Extra Title Tags <span class="hint">(appended to title)</span></label>
+          <input type="text" id="yt-extra-tags" placeholder="[EN/JP] !socials">
+        </div>
+
+        <div class="form-group">
+          <label for="yt-description">Description</label>
+          <textarea id="yt-description" rows="4" placeholder="Stream description…"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="yt-tags">Video Tags <span class="hint">(comma separated)</span></label>
+          <input type="text" id="yt-tags" placeholder="gaming, livestream, walkthrough">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="yt-datetime">Go-Live Time</label>
+            <input type="datetime-local" id="yt-datetime">
+          </div>
+          <div class="form-group" style="min-width:120px">
+            <label for="yt-privacy">Privacy</label>
+            <select id="yt-privacy">
+              <option value="public">Public</option>
+              <option value="unlisted">Unlisted</option>
+              <option value="private">Private</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="btn btn-youtube" id="create-youtube">Create YouTube Stream</button>
+      </section>
+    </div>
+
+    <div id="toast" class="toast"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
