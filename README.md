@@ -1,6 +1,6 @@
 # StreamTitler
 
-Local tool for setting up Twitch and YouTube livestreams from a single UI.
+Local tool for setting up Twitch and YouTube livestreams from a single UI. Pretty much completely vibe-coded because I didn't feel like spending time writing a tool myself.
 
 ## Features
 
