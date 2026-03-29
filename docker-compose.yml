@@ -1,0 +1,11 @@
+services:
+  streamtitler:
+    build: .
+    container_name: streamtitler
+    restart: unless-stopped
+    ports:
+      - "3847:3847"
+    env_file:
+      - .env
+    volumes:
+      - ./settings.json:/app/settings.json
