@@ -70,3 +70,10 @@ Click **Connect** next to Twitch and YouTube in the header. Each will open an OA
 3. **YouTube panel**: Add extra title tags (appended to the base title), description, video tags, schedule time, and privacy. Click **Create YouTube Stream** — this creates the broadcast and opens the YouTube live chat in a pop-out Chrome window
 
 All settings are saved to `settings.json` and restored the next time you open the app.
+
+## Running on my network
+
+I tried running this from my mini PC, but having an `http` origin meant copying text to the clipboard wouldn't work. Instead, I run it from Docker. To keep this up-to-date (assuming I have the environment set up already):
+
+- `git pull`
+- `docker compose up --detach --build`
