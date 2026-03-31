@@ -53,6 +53,7 @@ function getAuthedClient() {
 
 export interface BroadcastResult {
   videoId: string;
+  channelId: string;
 }
 
 export async function createBroadcast(
@@ -110,6 +111,14 @@ export async function createBroadcast(
     });
   }
 
+  // Get channel ID for Studio URL
+  const channelRes = await youtube.channels.list({
+    part: ["id"],
+    mine: true,
+  });
+  const channelId = channelRes.data.items?.[0]?.id;
+  if (!channelId) throw new Error("Could not retrieve channel ID");
+
   // Try to bind to an existing stream
   try {
     const streamsRes = await youtube.liveStreams.list({
@@ -129,7 +138,7 @@ export async function createBroadcast(
     console.warn("Could not bind to default stream (non-fatal):", err);
   }
 
-  return { videoId };
+  return { videoId, channelId };
 }
 
 export async function addToPlaylist(

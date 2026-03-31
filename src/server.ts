@@ -199,6 +199,10 @@ app.post("/api/youtube/create", async (req, res) => {
     });
     saveSettings(settings);
 
+    // Open YouTube Studio so the user can enable monetization
+    const studioUrl = `https://studio.youtube.com/channel/${result.channelId}/livestreaming/manage`;
+    execFile("open", [studioUrl]);
+
     res.json(result);
   } catch (err) {
     console.error("YouTube create error:", err);
