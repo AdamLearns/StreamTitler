@@ -243,5 +243,7 @@ app.post("/api/youtube/open-chat", (req, res) => {
 // ---------------------------------------------------------------------------
 
 app.listen(PORT, () => {
-  console.log(`StreamTitler running at http://localhost:${PORT}`);
+  const url = `http://localhost:${PORT}`;
+  console.log(`StreamTitler running at ${url}`);
+  execFile("open", [url]);
 });

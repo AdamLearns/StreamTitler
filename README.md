@@ -71,9 +71,8 @@ Click **Connect** next to Twitch and YouTube in the header. Each will open an OA
 
 All settings are saved to `settings.json` and restored the next time you open the app.
 
-## Running on my network
+## Running this
 
-I tried running this from my mini PC, but having an `http` origin meant copying text to the clipboard wouldn't work. Instead, I run it from Docker. To keep this up-to-date (assuming I have the environment set up already):
+I tried running this from my mini PC, but having an `http` origin meant copying text to the clipboard wouldn't work. After that, I tried running on my own machine from Docker (`git pull && docker compose up --detach --build`), but I couldn't open new Chrome tabs on the host machine.
 
-- `git pull`
-- `docker compose up --detach --build`
+...so now, I just run this using a shell script and then close it when I'm done.
