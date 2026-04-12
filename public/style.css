@@ -266,6 +266,20 @@ select { cursor: pointer; }
   background: #404047;
 }
 
+.tag-presets {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+
+.btn-preset {
+  background: #303035;
+}
+
+.btn-preset:hover {
+  background: #404047;
+}
+
 /* ---------- Toast ---------- */
 .toast {
   position: fixed;

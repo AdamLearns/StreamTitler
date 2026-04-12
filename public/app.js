@@ -206,6 +206,13 @@
     }
   });
 
+  // ---- Tag presets ---------------------------------------------------------
+  document.querySelectorAll(".btn-preset").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      $twitchTags.value = btn.dataset.tags;
+    });
+  });
+
   // ---- Helpers ------------------------------------------------------------
   function parseTags(str) {
     return str
