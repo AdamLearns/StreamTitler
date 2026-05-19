@@ -200,7 +200,7 @@ app.post("/api/youtube/create", async (req, res) => {
     saveSettings(settings);
 
     // Open YouTube Studio so the user can enable monetization
-    const studioUrl = `https://studio.youtube.com/channel/${result.channelId}/livestreaming/manage`;
+    const studioUrl = `https://studio.youtube.com/video/${result.videoId}/livestreaming/console`;
     execFile("open", [studioUrl]);
 
     res.json(result);
